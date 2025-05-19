@@ -30,5 +30,6 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle))
 async def webhook(request: Request):
     data = await request.json()
     update = Update.de_json(data, bot)
+    await application.initialize()
     await application.process_update(update)
     return "ok"
