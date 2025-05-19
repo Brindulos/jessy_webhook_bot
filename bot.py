@@ -2,7 +2,6 @@ import os
 from fastapi import FastAPI, Request
 from telegram import Update
 from telegram.ext import Application, ContextTypes, MessageHandler, filters
-from telegram.ext import Dispatcher
 from utils.tone_detector import detect_tone
 from utils.openai_utils import generate_reply
 from utils.voice_generator import generate_voice
