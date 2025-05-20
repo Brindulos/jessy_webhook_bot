@@ -3,7 +3,7 @@ import requests
 
 def generate_voice(text, filename):
     api_key = os.getenv("ELEVEN_API_KEY")
-    voice_id = "axGsyNadHjtfNCJqysRT"
+    voice_id = "sANWqF1bCMzR6eyZbCGw"
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
 
     headers = {
