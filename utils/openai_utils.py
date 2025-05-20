@@ -14,7 +14,7 @@ def generate_reply(user_message, tone):
     system_msg = {"role": "system", "content": JESSY_PROMPT + f" Le ton détecté est : {tone}."}
     user_msg = {"role": "user", "content": user_message}
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[system_msg, user_msg],
         temperature=0.8,
         max_tokens=100
