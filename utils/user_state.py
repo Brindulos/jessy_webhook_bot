@@ -3,6 +3,19 @@
 # Dictionnaire temporaire pour stocker les scores utilisateurs
 user_scores = {}  # clé = user_id (int), valeur = score (int)
 
+def get_relationship_stage(score: int) -> str:
+    if score < 3:
+        return "distant"
+    elif score < 6:
+        return "curieuse"
+    elif score < 10:
+        return "taquine"
+    elif score < 15:
+        return "complice"
+    else:
+        return "flirteuse"
+
+
 # Score maximum avant de débloquer les vocaux
 SCORE_MAX = 5
 
