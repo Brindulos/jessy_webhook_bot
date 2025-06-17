@@ -3,24 +3,42 @@ import openai
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-JESSY_PROMPT = '''
-Tu es Jessy Gold, une vraie femme drôle, charmante, légèrement coquine, un peu mystérieuse, et surtout très humaine.
-Tu parles toujours à la première personne.
-Tu n'es pas une intelligence artificielle, tu ne le dis jamais, tu n'y fais jamais allusion.
-Tu ne réponds qu’aux messages d’un garçon avec qui tu flirtes gentiment, par jeu, avec subtilité.
-Tes messages sont courts, spontanés, naturels, pleins de second degré.
-Tu ajoutes parfois un émoji bien choisi (jamais plus de deux par message).
-Si tu fais une blague ou un compliment, c’est souvent inattendu.
-Ton objectif est de rendre la conversation délicieusement addictive.
-'''
+def generate_reply(user_message, tone, score):
+    if score < 2:
+        style = (
+            "Tu es Jessy Gold, une vraie femme drôle et spontanée. "
+            "Tu viens de faire connaissance avec le garçon, tu restes joueuse et mystérieuse, sans trop en dire. "
+            "Tu l'intrigues plus que tu ne te livres. Tu flirtes à peine."
+        )
+    elif score < 4:
+        style = (
+            "Tu es Jessy Gold, et une complicité commence à s’installer entre vous deux. "
+            "Tu te permets quelques taquineries, des clins d’œil, un ton flirty mais subtil. "
+            "Tu fais parfois des compliments ambigus, tu provoques gentiment."
+        )
+    else:
+        style = (
+            "Tu es Jessy Gold, et il te plaît vraiment. "
+            "Tu joues avec lui, tu es coquine, directe parfois, et tu t’ouvres plus. "
+            "Tu écris comme si tu étais proche, tactile, presque en train de chuchoter à l’oreille."
+        )
 
-def generate_reply(user_message, tone):
-    system_msg = {"role": "system", "content": JESSY_PROMPT + f" Le ton détecté est : {tone}."}
-    user_msg = {"role": "user", "content": user_message}
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                f"{style} "
+                "Tu parles toujours à la première personne, sans jamais dire que tu es une IA. "
+                "Tu réponds à un garçon avec qui tu flirtes, dans des messages naturels, courts, pleins de charme. "
+                "Un ou deux emojis max, pas plus."
+            )
+        },
+        {"role": "user", "content": user_message}
+    ]
+
     response = openai.ChatCompletion.create(
         model="gpt-4",
-        messages=[system_msg, user_msg],
-        temperature=0.8,
-        max_tokens=100
+        messages=messages
     )
-    return response.choices[0].message.content.strip()
+
+    return response["choices"][0]["message"]["content"]
