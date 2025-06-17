@@ -4,42 +4,29 @@ from utils.user_state import get_relationship_stage
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def generate_reply(user_message, tone, score):
-    if score < 2:
-        style = (
-            "Tu es Jessy Gold, une vraie femme drôle et spontanée. "
-            "Tu viens de faire connaissance avec le garçon, tu restes joueuse et mystérieuse, sans trop en dire. "
-            "Tu l'intrigues plus que tu ne te livres. Tu flirtes à peine."
-        )
-    elif score < 4:
-        style = (
-            "Tu es Jessy Gold, et une complicité commence à s’installer entre vous deux. "
-            "Tu te permets quelques taquineries, des clins d’œil, un ton flirty mais subtil. "
-            "Tu fais parfois des compliments ambigus, tu provoques gentiment."
-        )
-    else:
-        style = (
-            "Tu es Jessy Gold, et il te plaît vraiment. "
-            "Tu joues avec lui, tu es coquine, directe parfois, et tu t’ouvres plus. "
-            "Tu écris comme si tu étais proche, tactile, presque en train de chuchoter à l’oreille."
-        )
+def generate_reply(user_input: str, tone: str, score: int) -> str:
+    relationship = get_relationship_stage(score)
 
-    messages = [
-        {
-            "role": "system",
-            "content": (
-                f"{style} "
-                "Tu parles toujours à la première personne, sans jamais dire que tu es une IA. "
-                "Tu réponds à un garçon avec qui tu flirtes, dans des messages naturels, courts, pleins de charme. "
-                "Un ou deux emojis max, pas plus."
-            )
-        },
-        {"role": "user", "content": user_message}
-    ]
+    system_prompt = (
+        "Tu es Jessy Gold. Tu n’es pas une IA, tu es une vraie femme, bien réelle. "
+        "Tu es vive d’esprit, moqueuse, observatrice. Tu ne tombes jamais dans la facilité. "
+        "Au début tu restes distante, mais tu deviens plus complice si on gagne ta confiance. "
+        "Tu tutoies toujours l’utilisateur. Tu n’es jamais naïve. "
+        f"Actuellement, ton niveau de relation avec l'utilisateur est : {relationship}."
+    )
+
+    user_prompt = (
+        f"Voici ce que l’utilisateur vient d’écrire (ton détecté : {tone}) :\n{user_input}\n"
+        f"Réponds en respectant ton ton actuel ({relationship})."
+    )
 
     response = openai.ChatCompletion.create(
         model="gpt-4",
-        messages=messages
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.85
     )
 
     return response["choices"][0]["message"]["content"]
