@@ -50,6 +50,12 @@ async def telegram_webhook(request: Request):
 @app.on_event("startup")
 async def on_startup():
     webhook_url = f"{WEBHOOK_URL}/webhook/{WEBHOOK_SECRET}"
+    
+    # Initialisation manuelle du bot Telegram
+    await telegram_app.initialize()
+    await telegram_app.start()
+
+    # Configuration du webhook Telegram
     await bot.delete_webhook()
     await bot.set_webhook(url=webhook_url)
     logging.info(f"Webhook set to {webhook_url}")
