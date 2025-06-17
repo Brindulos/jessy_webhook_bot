@@ -1,5 +1,6 @@
 import os
 import openai
+from utils.user_state import get_relationship_stage
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
